@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Appointment with Neeraj</title>
+  <style>
+    :root {
+      --primary: #fa541c;
+      --secondary: #1890ff;
+      --light-bg: #f4f6f8;
+      --text: #333;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background-color: var(--light-bg);
+    }
+    .container {
+      display: flex;
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .left {
+      background: var(--primary);
+      color: #fff;
+      flex: 1;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .left img {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      object-fit: cover;
+    }
+    .left h1 { font-size: 26px; margin: 10px 0; }
+    .left h2 { font-weight: normal; margin-top: 5px; }
+    .right {
+      flex: 2;
+      padding: 30px;
+    }
+    .section-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .slots {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .slot {
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .slot.selected {
+      background: var(--secondary);
+      color: white;
+    }
+    button {
+      width: 100%;
+      background: var(--secondary);
+      color: white;
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .thankyou {
+      text-align: center;
+      color: green;
+      font-weight: bold;
+      display: none;
+      margin-top: 20px;
+    }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <img src="https://i.imgur.com/snAYZUL.png" alt="Neeraj">
+      <h1>Meet with Neeraj</h1>
+      <h2>Vipany Global | April 2025</h2>
+    </div>
+    <div class="right">
+      <div class="section-title">Choose a Date</div>
+      <input type="date" id="date" required>
+      <div class="section-title">Select Time Slot</div>
+      <div class="slots" id="slots"></div>
+      <button id="bookBtn">Book Appointment</button>
+      <div class="thankyou" id="thankyouMessage">✅ Your appointment has been booked. Thank you!</div>
+    </div>
+  </div>
+
+  <script>
+    const slotsDiv = document.getElementById('slots');
+    const selectedSlot = { time: null };
+
+    const generateSlots = () => {
+      for (let hour = 9; hour <= 19; hour++) {
+        ['00', '30'].forEach(min => {
+          const time = `${String(hour).padStart(2, '0')}:${min}`;
+          const label = new Date(`1970-01-01T${time}`).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+          const div = document.createElement('div');
+          div.className = 'slot';
+          div.textContent = label;
+          div.dataset.time = time;
+          div.onclick = () => {
+            document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+            div.classList.add('selected');
+            selectedSlot.time = time;
+            console.log('Selected time:', time);
+          };
+          slotsDiv.appendChild(div);
+        });
+      }
+    };
+
+    const getClientName = () => {
+      const params = new URLSearchParams(window.location.search);
+      const client = params.get('client') || 'Unknown';
+      console.log('Client:', client);
+      return client;
+    };
+
+    document.getElementById('bookBtn').onclick = async () => {
+      const date = document.getElementById('date').value;
+      const time = selectedSlot.time;
+      const client = getClientName();
+
+      if (!date || !time) {
+        alert('Please select both date and time.');
+        return;
+      }
+
+      const payload = { date, time, client };
+      console.log('Sending data:', payload);
+
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxsUnPysBA5CtK1aqXX1Uot4SCln8-J-QybPQmuHGc2S64m7nN8Yw3zWA5T_fy1GrtbqQ/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const resData = await response.json();
+        console.log('Response from server:', resData);
+
+        if (resData.status === 'success') {
+          document.getElementById('thankyouMessage').style.display = 'block';
+          document.getElementById('date').value = '';
+          document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+        } else {
+          alert('Booking failed: ' + (resData.message || resData.status));
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Something went wrong. Check console for details.');
+      }
+    };
+
+    generateSlots();
+  </script>
+</body>
+</html>
