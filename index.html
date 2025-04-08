@@ -163,8 +163,9 @@
       console.log('Sending data:', payload);
 
       try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbxV0QHFuHL3WI0fKDT3svSnL8wR3Y6DakAArawzb79vWTc84SYq-sfay9sj_MQoDDzBOw/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxt26H4383T-eHgjdghhzXG0hMfA5-bN8UKPs5keqD5pqCRDz-hKl5M10myDcMBGu7v/exec', {
           method: 'POST',
+          mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
