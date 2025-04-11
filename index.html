@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Meet with Neeraj | Vipany Global</title>
+  <title>Schedule with Neeraj | Vipany Global</title>
   <style>
+    :root {
+      --primary-color: #143f63;
+      --accent-color: #ffd500;
+      --text-light: #ffffff;
+      --text-dark: #143f63;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #0f3556;
-      color: #ffffff;
+      background-color: var(--primary-color);
+      color: var(--text-light);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -19,44 +26,47 @@
 
     .container {
       display: flex;
-      background: #ffffff;
-      border-radius: 20px;
+      background: var(--text-light);
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-      max-width: 960px;
-      width: 100%;
-      color: #0f3556;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      max-width: 900px;
+      width: 95%;
+      flex-wrap: wrap;
     }
 
     .left {
-      background-color: #0f3556;
-      color: white;
-      padding: 30px;
+      background-color: var(--primary-color);
+      color: var(--text-light);
+      padding: 40px 30px;
       flex: 1;
       text-align: center;
+      min-width: 280px;
     }
 
     .left img {
-      width: 140px;
-      height: 140px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
       margin-bottom: 20px;
-      border: 4px solid #ffc800;
+      border: 4px solid var(--accent-color);
     }
 
     .right {
       flex: 2;
       padding: 40px 30px;
-      background-color: #f8fafc;
+      background-color: #f9fafb;
+      color: var(--text-dark);
+      min-width: 300px;
     }
 
     h2 {
       margin-top: 0;
-      color: #0f3556;
+      color: var(--text-dark);
     }
 
     input[type="date"] {
-      padding: 10px;
+      padding: 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
@@ -73,7 +83,7 @@
 
     .time-slot {
       background: #e2e8f0;
-      color: #0f3556;
+      color: var(--text-dark);
       padding: 10px;
       border-radius: 8px;
       text-align: center;
@@ -82,14 +92,14 @@
     }
 
     .time-slot.selected {
-      background: #ffc800;
-      color: #0f3556;
+      background: var(--accent-color);
+      color: var(--text-dark);
       font-weight: bold;
     }
 
     button {
-      background-color: #ffc800;
-      color: #0f3556;
+      background-color: var(--accent-color);
+      color: var(--text-dark);
       font-weight: bold;
       padding: 12px 20px;
       font-size: 16px;
@@ -100,7 +110,13 @@
     }
 
     button:hover {
-      background-color: #f0b800;
+      background-color: #f7cb00;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -109,7 +125,7 @@
   <div class="container">
     <div class="left">
       <img src="https://avatars.githubusercontent.com/u/81266222" alt="Neeraj">
-      <h2>Meet Neeraj</h2>
+      <h2>Neeraj Ramavathu</h2>
       <p>Business Development Executive<br>Vipany Global</p>
     </div>
 
@@ -181,3 +197,4 @@
 
 </body>
 </html>
+S
