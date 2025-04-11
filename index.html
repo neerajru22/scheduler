@@ -3,80 +3,104 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Meet with Neeraj</title>
+  <title>Meet with Neeraj | Vipany Global</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #0f3556;
+      color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      margin: 0;
-      background-color: #f1f5f9;
     }
+
     .container {
       display: flex;
-      background: white;
+      background: #ffffff;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      max-width: 1000px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+      max-width: 960px;
       width: 100%;
+      color: #0f3556;
     }
+
     .left {
-      background-color: #ff5b00;
+      background-color: #0f3556;
       color: white;
       padding: 30px;
-      text-align: center;
       flex: 1;
+      text-align: center;
     }
+
     .left img {
-      width: 150px;
-      height: 150px;
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
       margin-bottom: 20px;
+      border: 4px solid #ffc800;
     }
+
     .right {
       flex: 2;
-      padding: 30px;
+      padding: 40px 30px;
+      background-color: #f8fafc;
     }
-    .right h2 {
-      margin-bottom: 20px;
+
+    h2 {
+      margin-top: 0;
+      color: #0f3556;
     }
+
+    input[type="date"] {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
     .time-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
       margin: 20px 0;
     }
+
     .time-slot {
-      padding: 10px;
       background: #e2e8f0;
+      color: #0f3556;
+      padding: 10px;
+      border-radius: 8px;
       text-align: center;
-      border-radius: 10px;
       cursor: pointer;
+      font-weight: 500;
     }
+
     .time-slot.selected {
-      background-color: #2563eb;
-      color: white;
+      background: #ffc800;
+      color: #0f3556;
       font-weight: bold;
     }
+
     button {
-      background-color: #2563eb;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
+      background-color: #ffc800;
+      color: #0f3556;
+      font-weight: bold;
+      padding: 12px 20px;
       font-size: 16px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
       width: 100%;
     }
-    input[type="date"] {
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      width: 100%;
+
+    button:hover {
+      background-color: #f0b800;
     }
   </style>
 </head>
@@ -84,16 +108,15 @@
 
   <div class="container">
     <div class="left">
-      <img src="https://avatars.githubusercontent.com/u/81266222" alt="Neeraj" />
-      <h2>Meet with Neeraj</h2>
-      <p>Vipany Global | April 2025</p>
+      <img src="https://avatars.githubusercontent.com/u/81266222" alt="Neeraj">
+      <h2>Meet Neeraj</h2>
+      <p>Business Development Executive<br>Vipany Global</p>
     </div>
+
     <div class="right">
-      <h2>Select Time Slot</h2>
+      <h2>Book Your Appointment</h2>
       <input type="date" id="datePicker" />
-      <div class="time-grid" id="timeGrid">
-        <!-- Time slots will be inserted dynamically -->
-      </div>
+      <div class="time-grid" id="timeGrid"></div>
       <button id="bookBtn">Book Appointment</button>
     </div>
   </div>
@@ -123,11 +146,7 @@
     document.getElementById("bookBtn").onclick = async function () {
       const date = document.getElementById("datePicker").value;
       const selectedTime = document.querySelector(".time-slot.selected")?.innerText;
-
-      if (!date || !selectedTime) {
-        alert("Please select both date and time.");
-        return;
-      }
+      if (!date || !selectedTime) return alert("Please select date and time.");
 
       const client = new URLSearchParams(window.location.search).get("client") || "Unknown";
 
@@ -138,30 +157,27 @@
       };
 
       try {
-        const response = await fetch(
+        const res = await fetch(
           "https://script.google.com/macros/s/AKfycbyuL89jfMIa-9wiYigjXi64bAcdsylaqNNDu4fe_TJGM845myITeqbry4q9XEtePsQ-/exec",
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
           }
         );
 
-        const result = await response.json();
-
+        const result = await res.json();
         if (result.status === "success") {
           alert("🎉 Appointment booked successfully!");
         } else {
-          console.error("Error:", result.message);
           alert("Something went wrong. Please try again.");
         }
       } catch (err) {
-        console.error("Network error:", err);
-        alert("Something went wrong while booking. See console for details.");
+        console.error(err);
+        alert("Failed to book appointment. Try again later.");
       }
     };
   </script>
+
 </body>
 </html>
