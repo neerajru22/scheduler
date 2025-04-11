@@ -159,10 +159,11 @@
       const payload = { date, time, client };
 
       try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbw7N8IzLKkaI4-6hclADXNe52osucGdcdG5q5kIwlH7IzzEpkxC-Rd3taHSRmiXqrVq/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbyuL89jfMIa-9wiYigjXi64bAcdsylaqNNDu4fe_TJGM845myITeqbry4q9XEtePsQ-/exec', {
           method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify(payload)
         });
 
@@ -173,11 +174,11 @@
           document.getElementById('date').value = '';
           document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
         } else {
-          alert('Booking failed: ' + (result.message || result.status));
+          alert('Failed to book: ' + result.message);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('Something went wrong. See console.');
+        console.error(error);
+        alert('Something went wrong while booking. See console for details.');
       }
     };
 
