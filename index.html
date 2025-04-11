@@ -3,198 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Schedule with Neeraj | Vipany Global</title>
+  <title>Vipany Booking</title>
   <style>
-    :root {
-      --primary-color: #143f63;
-      --accent-color: #ffd500;
-      --text-light: #ffffff;
-      --text-dark: #143f63;
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fb;
       margin: 0;
       padding: 0;
-      background-color: var(--primary-color);
-      color: var(--text-light);
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
     }
-
-    .container {
-      display: flex;
-      background: var(--text-light);
+    .form-container {
+      background-color: white;
       border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      max-width: 900px;
-      width: 95%;
-      flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      border-top: 6px solid #F37021; /* Vipany Orange */
     }
-
-    .left {
-      background-color: var(--primary-color);
-      color: var(--text-light);
-      padding: 40px 30px;
-      flex: 1;
-      text-align: center;
-      min-width: 280px;
-    }
-
-    .left img {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      margin-bottom: 20px;
-      border: 4px solid var(--accent-color);
-    }
-
-    .right {
-      flex: 2;
-      padding: 40px 30px;
-      background-color: #f9fafb;
-      color: var(--text-dark);
-      min-width: 300px;
-    }
-
     h2 {
-      margin-top: 0;
-      color: var(--text-dark);
+      text-align: center;
+      color: #143d59; /* Vipany Dark Blue */
     }
-
-    input[type="date"] {
-      padding: 12px;
+    label {
+      display: block;
+      margin: 1rem 0 0.25rem;
+      font-weight: 600;
+      color: #333;
+    }
+    input[type="date"],
+    input[type="time"],
+    button {
+      width: 100%;
+      padding: 0.75rem;
       border-radius: 8px;
       border: 1px solid #ccc;
-      font-size: 16px;
-      width: 100%;
-      margin-top: 10px;
+      font-size: 1rem;
     }
-
-    .time-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin: 20px 0;
-    }
-
-    .time-slot {
-      background: #e2e8f0;
-      color: var(--text-dark);
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .time-slot.selected {
-      background: var(--accent-color);
-      color: var(--text-dark);
-      font-weight: bold;
-    }
-
     button {
-      background-color: var(--accent-color);
-      color: var(--text-dark);
-      font-weight: bold;
-      padding: 12px 20px;
-      font-size: 16px;
+      background-color: #143d59;
+      color: white;
       border: none;
-      border-radius: 8px;
+      margin-top: 1.5rem;
       cursor: pointer;
-      width: 100%;
+      font-weight: bold;
     }
-
     button:hover {
-      background-color: #f7cb00;
+      background-color: #0e2e46;
     }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.95rem;
     }
   </style>
 </head>
 <body>
+  <div class="form-container">
+    <h2>Book Your Slot</h2>
+    <form id="bookingForm">
+      <label for="date">Select Date</label>
+      <input type="date" id="date" required />
 
-  <div class="container">
-    <div class="left">
-      <img src="https://avatars.githubusercontent.com/u/81266222" alt="Neeraj">
-      <h2>Neeraj Ramavathu</h2>
-      <p>Business Development Executive<br>Vipany Global</p>
-    </div>
+      <label for="time">Select Time</label>
+      <input type="time" id="time" required />
 
-    <div class="right">
-      <h2>Book Your Appointment</h2>
-      <input type="date" id="datePicker" />
-      <div class="time-grid" id="timeGrid"></div>
-      <button id="bookBtn">Book Appointment</button>
-    </div>
+      <button type="submit">Submit</button>
+      <p class="message" id="responseMessage"></p>
+    </form>
   </div>
 
   <script>
-    const timeSlots = [
-      "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM",
-      "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM",
-      "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM",
-      "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM",
-      "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM",
-      "07:00 PM", "07:30 PM"
-    ];
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyxKnnHU4mL8pp2ZurFwootF-rg1OQasH3xrphYO2jCRSaYDjD-hh4ugD2Ge6IxXonZ/exec';
+    const form = document.getElementById('bookingForm');
+    const message = document.getElementById('responseMessage');
 
-    const grid = document.getElementById("timeGrid");
-    timeSlots.forEach(slot => {
-      const div = document.createElement("div");
-      div.className = "time-slot";
-      div.innerText = slot;
-      div.onclick = () => {
-        document.querySelectorAll(".time-slot").forEach(el => el.classList.remove("selected"));
-        div.classList.add("selected");
-      };
-      grid.appendChild(div);
-    });
+    // Get client name from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const client = urlParams.get('client') || 'Unknown';
 
-    document.getElementById("bookBtn").onclick = async function () {
-      const date = document.getElementById("datePicker").value;
-      const selectedTime = document.querySelector(".time-slot.selected")?.innerText;
-      if (!date || !selectedTime) return alert("Please select date and time.");
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.textContent = "Submitting...";
 
-      const client = new URLSearchParams(window.location.search).get("client") || "Unknown";
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
 
       const payload = {
         client: client,
         date: date,
-        time: selectedTime
+        time: time
       };
 
       try {
-        const res = await fetch(
-          "https://script.google.com/macros/s/AKfycbyuL89jfMIa-9wiYigjXi64bAcdsylaqNNDu4fe_TJGM845myITeqbry4q9XEtePsQ-/exec",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+        const res = await fetch(scriptURL, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: {
+            'Content-Type': 'application/json'
           }
-        );
+        });
 
         const result = await res.json();
-        if (result.status === "success") {
-          alert("🎉 Appointment booked successfully!");
+        if (result.status === 'success') {
+          message.style.color = 'green';
+          message.textContent = "Booking confirmed!";
+          form.reset();
         } else {
-          alert("Something went wrong. Please try again.");
+          throw new Error(result.message || 'Unknown error');
         }
       } catch (err) {
-        console.error(err);
-        alert("Failed to book appointment. Try again later.");
+        message.style.color = 'red';
+        message.textContent = "Error: " + err.message;
       }
-    };
+    });
   </script>
-
 </body>
 </html>
-S
